@@ -3,6 +3,8 @@ Part B — Fine-tuning Whisper-small for Azerbaijani ASR
 Train  : 200 samples from Common Voice 17.0 (az)
 Val    : 50  samples
 Test   : 100 samples
+
+NOTE: Requires HuggingFace login + accepted Common Voice dataset terms.
 """
 
 import os, torch, warnings
@@ -23,6 +25,14 @@ from transformers import (
     Seq2SeqTrainer,
     EarlyStoppingCallback,
 )
+from huggingface_hub import login
+
+# ── HuggingFace Login ─────────────────────────────────────────────────────────
+HF_TOKEN = os.environ.get("HF_TOKEN", "")
+if HF_TOKEN:
+    login(token=HF_TOKEN)
+else:
+    print("⚠️  HF_TOKEN not set. Dataset will fail without login.")
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 MODEL_NAME    = "openai/whisper-small"
@@ -62,7 +72,7 @@ if device == "cpu":
 # ── 2. DATASET ────────────────────────────────────────────────────────────────
 print("\n📥 Loading dataset …")
 def load_split(split_str):
-    ds = load_dataset(DATASET_NAME, LANGUAGE, split=split_str, trust_remote_code=True)
+    ds = load_dataset(DATASET_NAME, LANGUAGE, split=split_str)
     drop = [c for c in ["accent","age","client_id","down_votes","gender",
                          "locale","path","segment","up_votes","variant"]
             if c in ds.column_names]

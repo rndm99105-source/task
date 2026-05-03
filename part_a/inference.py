@@ -3,6 +3,11 @@ Part A — ASR Baseline Inference
 Model  : openai/whisper-small
 Dataset: Mozilla Common Voice 17.0 (az)
 Metrics: WER, CER
+
+NOTE: Common Voice dataset requires HuggingFace login.
+  1. Create account at huggingface.co
+  2. Accept dataset terms at huggingface.co/datasets/mozilla-foundation/common_voice_17_0
+  3. Set HF_TOKEN environment variable or pass token below
 """
 
 import os
@@ -16,6 +21,14 @@ warnings.filterwarnings("ignore")
 
 from datasets import load_dataset, Audio
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from huggingface_hub import login
+
+# ── HuggingFace Login ─────────────────────────────────────────────────────────
+HF_TOKEN = os.environ.get("HF_TOKEN", "")  # set env var or paste token here
+if HF_TOKEN:
+    login(token=HF_TOKEN)
+else:
+    print("⚠️  HF_TOKEN not set. If dataset fails, run: login(token='hf_...')")
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 MODEL_NAME   = "openai/whisper-small"
@@ -41,7 +54,6 @@ dataset = load_dataset(
     DATASET_NAME,
     LANGUAGE,
     split=f"test[:{MAX_SAMPLES}]",
-    trust_remote_code=True,
 )
 dataset = dataset.cast_column("audio", Audio(sampling_rate=16_000))
 print(f"✅  {len(dataset)} test samples loaded")
