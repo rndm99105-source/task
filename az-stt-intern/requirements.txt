@@ -1,0 +1,9 @@
+# Requirements for the Azerbaijani ASR project
+transformers>=4.37.0
+datasets>=2.14.0
+evaluate>=0.4.0
+jiwer>=3.0.1
+torchaudio>=2.1.0
+scipy
+pandas
+matplotlib
