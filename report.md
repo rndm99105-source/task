@@ -66,12 +66,12 @@ Whisper-small modeli Azərbaycan dili (Google FLEURS) üçün baseline olaraq **
 
 | Şərait | Performans |
 |---|---|
-| Sakit mühit, aydın nitq | ✅ Yaxşı |
-| Yavaş, aydın danışıq | ✅ Yaxşı |
-| Sürətli danışıq | ⚠️ Orta |
-| Fon səs-küyü | ❌ Zəif |
-| Uşaq səsi | ❌ Zəif |
-| Dialekt/aksent | ❌ Zəif |
+| Sakit mühit, aydın nitq | Yaxşı |
+| Yavaş, aydın danışıq | Yaxşı |
+| Sürətli danışıq | Orta |
+| Fon səs-küyü | Zəif |
+| Uşaq səsi | Zəif |
+| Dialekt/aksent | Zəif |
 
 ---
 

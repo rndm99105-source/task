@@ -6,7 +6,7 @@
 
 ---
 
-## 📁 Repo Strukturu
+## Repo Strukturu
 
 ```
 az-stt-intern/
@@ -27,7 +27,7 @@ az-stt-intern/
 
 ---
 
-## 🤖 İstifadə Olunan Model
+## İstifadə Olunan Model
 
 | Parametr | Dəyər |
 |---|---|
@@ -41,9 +41,9 @@ az-stt-intern/
 
 ---
 
-## 📊 WER / CER Nəticələri
+## WER / CER Nəticələri
 
-> ⚠️ Aşağıdakı cədvəl skriptlər işlədikdən sonra `results/` qovluğundan real dəyərlərlə yenilənəcəkdir.
+> Diqqət: Aşağıdakı cədvəl skriptlər işlədikdən sonra `results/` qovluğundan real dəyərlərlə yenilənəcəkdir.
 
 ### Hissə A — Baseline
 
@@ -60,7 +60,7 @@ az-stt-intern/
 
 ---
 
-## ⚙️ Kodu İşə Salmaq (Google Colab)
+## Kodu İşə Salmaq (Google Colab)
 
 ### Quraşdırma
 
@@ -96,7 +96,7 @@ az-stt-intern/
 
 ---
 
-## 🔬 Fine-Tuning Parametrləri
+## Fine-Tuning Parametrləri
 
 | Parametr | Dəyər |
 |---|---|
@@ -112,7 +112,7 @@ az-stt-intern/
 
 ---
 
-## 📈 Qrafiklər
+## Qrafiklər
 
 Skriptlər tamamlandıqdan sonra `results/` qovluğunda:
 - `part_a_wer_distribution.png` — WER histoqramı
@@ -120,6 +120,6 @@ Skriptlər tamamlandıqdan sonra `results/` qovluğunda:
 
 ---
 
-## 📄 Analitik Hesabat
+## Analitik Hesabat
 
 Tam analitik hesabat üçün → [`report.md`](./report.md)
