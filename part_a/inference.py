@@ -1,13 +1,9 @@
 """
 Part A — ASR Baseline Inference
 Model  : openai/whisper-small
-Dataset: Mozilla Common Voice 17.0 (az)
+Dataset: Google FLEURS — Azerbaijani (az_az)
+         [Replaces Common Voice 17 which moved to Mozilla Data Collective in Oct 2025]
 Metrics: WER, CER
-
-NOTE: Common Voice dataset requires HuggingFace login.
-  1. Create account at huggingface.co
-  2. Accept dataset terms at huggingface.co/datasets/mozilla-foundation/common_voice_17_0
-  3. Set HF_TOKEN environment variable or pass token below
 """
 
 import os
@@ -21,27 +17,20 @@ warnings.filterwarnings("ignore")
 
 from datasets import load_dataset, Audio
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
-from huggingface_hub import login
-
-# ── HuggingFace Login ─────────────────────────────────────────────────────────
-HF_TOKEN = os.environ.get("HF_TOKEN", "")  # set env var or paste token here
-if HF_TOKEN:
-    login(token=HF_TOKEN)
-else:
-    print("⚠️  HF_TOKEN not set. If dataset fails, run: login(token='hf_...')")
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-MODEL_NAME   = "openai/whisper-small"
-DATASET_NAME = "mozilla-foundation/common_voice_17_0"
-LANGUAGE     = "az"
+MODEL_NAME    = "openai/whisper-small"
+DATASET_NAME  = "google/fleurs"
+DATASET_CONFIG = "az_az"          # Azerbaijani
+TEXT_COLUMN   = "transcription"   # FLEURS uses 'transcription' not 'sentence'
 LANGUAGE_FULL = "azerbaijani"
-TASK         = "transcribe"
-MAX_SAMPLES  = 200          # test subset size
-RESULTS_DIR  = "../results"
+TASK          = "transcribe"
+MAX_SAMPLES   = 200
+RESULTS_DIR   = "../results"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 print(f"🔊  ASR Baseline — {MODEL_NAME}")
-print(f"📦  Dataset      — {DATASET_NAME} [{LANGUAGE}]")
+print(f"📦  Dataset      — {DATASET_NAME} [{DATASET_CONFIG}]")
 print("=" * 60)
 
 # ── 1. DEVICE ─────────────────────────────────────────────────────────────────
@@ -50,11 +39,9 @@ print(f"⚙️   Device: {device}")
 
 # ── 2. DATASET ────────────────────────────────────────────────────────────────
 print("\n📥 Loading dataset …")
-dataset = load_dataset(
-    DATASET_NAME,
-    LANGUAGE,
-    split=f"test[:{MAX_SAMPLES}]",
-)
+dataset = load_dataset(DATASET_NAME, DATASET_CONFIG, split="test")
+if len(dataset) > MAX_SAMPLES:
+    dataset = dataset.select(range(MAX_SAMPLES))
 dataset = dataset.cast_column("audio", Audio(sampling_rate=16_000))
 print(f"✅  {len(dataset)} test samples loaded")
 
@@ -86,7 +73,7 @@ def transcribe(sample: dict) -> str:
 print("\n🔄 Running inference …")
 references, hypotheses = [], []
 for i, sample in enumerate(dataset):
-    references.append(sample["sentence"].strip())
+    references.append(sample[TEXT_COLUMN].strip())
     hypotheses.append(transcribe(sample).strip())
     if (i + 1) % 20 == 0:
         print(f"   {i+1}/{len(dataset)}")
@@ -147,11 +134,11 @@ show_samples("❌  Top-5 Worst (highest WER):", df.nlargest(5, "WER"))
 df.to_csv(f"{RESULTS_DIR}/part_a_results.csv", index=False)
 
 summary = pd.DataFrame([{
-    "Model"       : MODEL_NAME,
-    "Dataset"     : f"{DATASET_NAME} [{LANGUAGE}]",
-    "Samples"     : len(df),
-    "WER (%)"     : round(overall_wer * 100, 2),
-    "CER (%)"     : round(overall_cer * 100, 2),
+    "Model"   : MODEL_NAME,
+    "Dataset" : f"{DATASET_NAME} [{DATASET_CONFIG}]",
+    "Samples" : len(df),
+    "WER (%)" : round(overall_wer * 100, 2),
+    "CER (%)" : round(overall_cer * 100, 2),
 }])
 summary.to_csv(f"{RESULTS_DIR}/part_a_summary.csv", index=False)
 print(f"\n💾  Results saved → {RESULTS_DIR}/part_a_results.csv")
