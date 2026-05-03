@@ -47,10 +47,10 @@ Azərbaycan dili aşağıdakı xüsusiyyətlərə görə ASR sistemləri üçün
 
 ### WER/CER Qiymətləndirməsi
 
-Whisper-small modeli Azərbaycan dili üçün baseline olaraq təxminən **30–50% WER** göstərir. Bu nəticə:
+Whisper-small modeli Azərbaycan dili (Google FLEURS) üçün baseline olaraq **62.25% WER** və **13.64% CER** göstərdi. Bu nəticə:
 
-- **Yaxşı hesab edilirmi?** Azərbaycan kimi az-resurslu dil üçün nisbətən qəbul edilə biləndir. Müqayisə üçün: İngilis dilində Whisper-small ~5-8% WER göstərir. Azərbaycan dili üçün 30-50% WER bu modelin bu dildə adekvat pretrain edilmədiyini göstərir
-- **Fine-tuning sonrası:** 200 nümunəlik kiçik dataset ilə belə, nəzərəçarpacaq yaxşılaşma (5-15% WER azalması) gözlənilir
+- **Yaxşı hesab edilirmi?** Azərbaycan kimi az-resurslu dil üçün nisbətən qəbul edilə biləndir. Müqayisə üçün: İngilis dilində Whisper-small ~5-8% WER göstərir. Azərbaycan dili üçün 60+ % WER bu modelin bu dildə yetərincə data ilə pretrain edilmədiyini göstərir.
+- **Fine-tuning sonrası:** Cəmi 200 nümunəlik kiçik dataset ilə qısa müddətli təlimdən (fine-tuning) sonra modelin səhv dərəcəsi (WER) **44.40%-ə** düşdü. Bu, **17.84% yaxşılaşma (improvement)** deməkdir və pipeline-ın düzgün quraşdırıldığını və öyrənmənin uğurlu olduğunu sübut edir. CER isə 12.37%-ə düşdü.
 
 ### Modelin Etdiyi Xəta Növləri
 

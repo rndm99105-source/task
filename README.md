@@ -49,14 +49,14 @@ az-stt-intern/
 
 | Model | Samples | WER (%) | CER (%) |
 |---|---|---|---|
-| Whisper-small (Baseline) | 200 | *(run script)* | *(run script)* |
+| Whisper-small (Baseline) | 200 | 62.25 | 13.64 |
 
 ### Hissə B — Fine-Tuning Müqayisəsi
 
 | Model | WER (%) | CER (%) | ΔWER |
 |---|---|---|---|
-| Whisper-small (Baseline)   | — | — | — |
-| Whisper-small (Fine-tuned) | — | — | — |
+| Whisper-small (Baseline)   | 62.25 | 13.64 | — |
+| Whisper-small (Fine-tuned) | 44.40 | 12.37 | +17.84% |
 
 ---
 

@@ -1,0 +1,2 @@
+Model,Dataset,Samples,WER (%),CER (%)
+openai/whisper-small,google/fleurs [az_az],200,49.88,13.6
