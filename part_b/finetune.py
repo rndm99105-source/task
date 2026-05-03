@@ -51,18 +51,18 @@ EVAL_STEPS  = 100
 SAVE_STEPS  = 100
 GRAD_ACCUM  = 2
 
-print(f"🎯  Fine-tuning {MODEL_NAME} → Azerbaijani ASR")
-print(f"📦  Dataset: {DATASET_NAME} [{DATASET_CONFIG}]")
+print(f"Fine-tuning {MODEL_NAME} → Azerbaijani ASR")
+print(f"Dataset: {DATASET_NAME} [{DATASET_CONFIG}]")
 print("=" * 60)
 
 # ── 1. DEVICE ─────────────────────────────────────────────────────────────────
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"⚙️   Device: {device}")
+print(f"Device: {device}")
 if device == "cpu":
-    print("⚠️   No GPU — use Colab T4 GPU runtime!")
+    print("Warning: No GPU — use Colab T4 GPU runtime!")
 
 # ── 2. DATASET ────────────────────────────────────────────────────────────────
-print("\n📥 Loading dataset …")
+print("\nLoading dataset …")
 
 def load_split(split: str, n: int):
     ds = load_dataset(DATASET_NAME, DATASET_CONFIG, split=split, trust_remote_code=True)
@@ -79,7 +79,7 @@ test_raw  = load_split("test",       TEST_SAMPLES)
 print(f"  Train: {len(train_raw)} | Val: {len(val_raw)} | Test: {len(test_raw)}")
 
 # ── 3. MODEL & PROCESSOR ──────────────────────────────────────────────────────
-print(f"\n🤖 Loading {MODEL_NAME} …")
+print(f"\nLoading {MODEL_NAME} …")
 processor = WhisperProcessor.from_pretrained(
     MODEL_NAME, language=LANGUAGE_FULL, task=TASK
 )
@@ -88,7 +88,7 @@ model.generation_config.language           = LANGUAGE_FULL
 model.generation_config.task               = TASK
 model.generation_config.forced_decoder_ids = None
 model = model.to(device)
-print("✅  Model ready")
+print("Model ready")
 
 # ── 4. FEATURE PREPARATION ───────────────────────────────────────────────────
 def prepare(batch):
@@ -99,11 +99,11 @@ def prepare(batch):
     batch["labels"] = processor.tokenizer(batch[TEXT_COLUMN]).input_ids
     return batch
 
-print("\n🔄 Extracting features …")
+print("\nExtracting features …")
 train_ds = train_raw.map(prepare, remove_columns=train_raw.column_names)
 val_ds   = val_raw.map(prepare,   remove_columns=val_raw.column_names)
 test_ds  = test_raw.map(prepare,  remove_columns=test_raw.column_names)
-print("✅  Features ready")
+print("Features ready")
 
 # ── 5. DATA COLLATOR ──────────────────────────────────────────────────────────
 @dataclass
@@ -177,20 +177,20 @@ trainer = Seq2SeqTrainer(
 )
 
 # ── 9. BASELINE EVAL (before fine-tuning) ────────────────────────────────────
-print("\n📊 Baseline evaluation …")
+print("\nBaseline evaluation …")
 baseline_eval = trainer.evaluate(test_ds)
 baseline_wer  = baseline_eval.get("eval_wer", float("nan"))
 print(f"  Baseline WER : {baseline_wer:.2f}%")
 
 # ── 10. FINE-TUNE ─────────────────────────────────────────────────────────────
-print(f"\n🚀 Fine-tuning … ({MAX_STEPS} steps, early stopping patience=3)")
+print(f"\nFine-tuning … ({MAX_STEPS} steps, early stopping patience=3)")
 trainer.train()
 trainer.save_model(OUTPUT_DIR)
 processor.save_pretrained(OUTPUT_DIR)
-print(f"✅  Best model saved → {OUTPUT_DIR}")
+print(f"Best model saved → {OUTPUT_DIR}")
 
 # ── 11. FINE-TUNED EVAL ───────────────────────────────────────────────────────
-print("\n📊 Fine-tuned evaluation …")
+print("\nFine-tuned evaluation …")
 ft_eval = trainer.evaluate(test_ds)
 ft_wer  = ft_eval.get("eval_wer", float("nan"))
 print(f"  Fine-tuned WER : {ft_wer:.2f}%")
@@ -216,7 +216,7 @@ def infer_all(m, proc, ds_raw):
         refs.append(ref); hyps.append(hyp)
     return refs, hyps
 
-print("\n🔄 Final comparison inference …")
+print("\nFinal comparison inference …")
 base_model = WhisperForConditionalGeneration.from_pretrained(MODEL_NAME).to(device)
 base_proc  = WhisperProcessor.from_pretrained(MODEL_NAME, language=LANGUAGE_FULL, task=TASK)
 base_refs, base_hyps = infer_all(base_model, base_proc, test_raw)
@@ -237,7 +237,7 @@ cmp = pd.DataFrame([
     {"Model": "Whisper-small (Baseline)",   "WER (%)": round(baseline_wer, 2), "CER (%)": round(base_cer, 2), "ΔWER": "—",                               "ΔCER": "—"},
     {"Model": "Whisper-small (Fine-tuned)", "WER (%)": round(ft_wer,       2), "CER (%)": round(ft_cer,   2), "ΔWER": f"{baseline_wer-ft_wer:+.2f}%", "ΔCER": f"{base_cer-ft_cer:+.2f}%"},
 ])
-print("\n📋 Comparison Table:")
+print("\nComparison Table:")
 print(cmp.to_string(index=False))
 cmp.to_csv(f"{RESULTS_DIR}/part_b_comparison.csv", index=False)
 
@@ -269,5 +269,5 @@ plt.suptitle("Part B — Fine-tuning Whisper-small (Azerbaijani / FLEURS)", font
 plt.tight_layout()
 plt.savefig(f"{RESULTS_DIR}/part_b_training_curves.png", dpi=150)
 plt.show()
-print(f"\n📈  Training curves → {RESULTS_DIR}/part_b_training_curves.png")
-print(f"💾  Comparison table → {RESULTS_DIR}/part_b_comparison.csv")
+print(f"\nTraining curves → {RESULTS_DIR}/part_b_training_curves.png")
+print(f"Comparison table → {RESULTS_DIR}/part_b_comparison.csv")
