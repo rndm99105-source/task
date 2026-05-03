@@ -39,7 +39,7 @@ print(f"⚙️   Device: {device}")
 
 # ── 2. DATASET ────────────────────────────────────────────────────────────────
 print("\n📥 Loading dataset …")
-dataset = load_dataset(DATASET_NAME, DATASET_CONFIG, split="test")
+dataset = load_dataset(DATASET_NAME, DATASET_CONFIG, split="test", trust_remote_code=True)
 if len(dataset) > MAX_SAMPLES:
     dataset = dataset.select(range(MAX_SAMPLES))
 dataset = dataset.cast_column("audio", Audio(sampling_rate=16_000))

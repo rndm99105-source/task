@@ -65,7 +65,7 @@ if device == "cpu":
 print("\n📥 Loading dataset …")
 
 def load_split(split: str, n: int):
-    ds = load_dataset(DATASET_NAME, DATASET_CONFIG, split=split)
+    ds = load_dataset(DATASET_NAME, DATASET_CONFIG, split=split, trust_remote_code=True)
     if len(ds) > n:
         ds = ds.select(range(n))
     drop = [c for c in ds.column_names
